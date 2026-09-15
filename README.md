@@ -1,6 +1,17 @@
-# World Engine games
+# WorldEngine.space
+
+## Download the client
+
+| Windows | Mac | Linux | Android |
+| :---: | :---: | :---: | :---: |
+| [![Download windows](icons/platform-windows.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.0.0/WorldEngine-Windows.exe) | [![Download mac](icons/platform-mac.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.0.0/WorldEngine-Mac.pkg) | [![Download linux](icons/platform-linux.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.0.0/WorldEngine-Linux.AppImage) | [![Download android](icons/platform-android.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.0.0/WorldEngine-Android.apk) |
+
+All ten games in one client, with accounts, supported cloud saves, chat and a wishlist. Internet required. [Client details](distribution/client/README.md) · [Release and checksums](https://github.com/worldengine-space/game-downloads/releases/tag/client-v1.0.0)
 
 **[Play in your browser](https://worldengine.space/play/)**
+
+## Download individual games
+
 
 Click a platform icon to download the complete game.
 
@@ -19,7 +30,7 @@ Click a platform icon to download the complete game.
 
 Windows: run the portable EXE. Mac: open the universal installer (Intel and Apple Silicon). Android: open the signed APK to install. Operating-system installation and security prompts may apply.
 
-These editions work offline and save supported progress on your device. Accounts, cloud saves and game chat are available in the [browser portal](https://worldengine.space/play/). Game-specific save limitations still apply.
+These editions work offline and save supported progress on your device. Accounts, cloud saves and game chat are available in the [browser portal and unified client](https://worldengine.space/play/). Game-specific save limitations still apply.
 
 [Release notes and checksums](https://github.com/worldengine-space/game-downloads/releases/tag/v2026.09.15)
 
