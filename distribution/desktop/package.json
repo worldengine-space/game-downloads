@@ -1,0 +1,11 @@
+{
+  "name": "worldengine-offline-desktop",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline desktop hosts for World Engine games",
+  "main": "main.cjs",
+  "devDependencies": {
+    "electron": "44.3.0",
+    "electron-builder": "26.15.3"
+  }
+}
