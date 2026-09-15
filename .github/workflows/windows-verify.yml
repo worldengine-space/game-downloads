@@ -11,7 +11,8 @@ on:
         required: true
         default: '["simfarm", "tom-jerry", "tom-jerry-claymation", "golden-axe", "arkanoid", "lemmings", "prince-of-persia", "tyrian", "revolt", "destruction-derby"]'
 permissions:
-  contents: read
+  # GitHub requires push access to read draft release assets.
+  contents: write
 jobs:
   packaged-runtime:
     runs-on: windows-latest
