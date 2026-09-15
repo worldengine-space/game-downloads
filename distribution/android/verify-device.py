@@ -10,7 +10,7 @@ def attach(package):
             pid=adb('shell','pidof',package).decode().strip().split()[0]
             adb('forward','tcp:9222','localabstract:webview_devtools_remote_'+pid)
             pages=json.load(urllib.request.urlopen('http://127.0.0.1:9222/json'))
-            page=next(p for p in pages if p.get('type')=='page')
+            page=next(p for p in pages if p.get('type')=='page' and p.get('url','').startswith('https://appassets.androidplatform.net/assets/'))
             return websocket.create_connection(page['webSocketDebuggerUrl'],timeout=45,suppress_origin=True)
         except Exception: time.sleep(1)
     raise RuntimeError('WebView DevTools unavailable: '+package)
