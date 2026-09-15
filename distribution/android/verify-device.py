@@ -1,6 +1,7 @@
 """Exercise exact signed release APKs on Android through the QA-only DevTools switch."""
 import json, pathlib, subprocess, time, urllib.request, traceback
 import websocket
+from PIL import Image
 out=pathlib.Path('android-evidence');out.mkdir(exist_ok=True)
 def adb(*args,**kw): return subprocess.check_output(['adb',*args],**kw)
 def attach(package):
@@ -88,11 +89,22 @@ for apk in files:
         assert any(c['visible'] and c['width']>0 for c in result['runtime']['canvas']),result['runtime']
         assert game=='simfarm' or result['runtime']['controls']>0,result['runtime']
         assert not result['runtime']['errors'],result['runtime']['errors']
-        # A rendered frame must contain multiple colors, not an empty canvas element.
-        if game!='revolt':
-            pixels=evaluate(ws,"(()=>{const src=document.querySelector('canvas'),c=document.createElement('canvas');c.width=64;c.height=40;const x=c.getContext('2d');x.drawImage(src,0,0,64,40);const p=x.getImageData(0,0,64,40).data,colors=new Set();for(let i=0;i<p.length;i+=4)colors.add(p[i]+','+p[i+1]+','+p[i+2]);return colors.size})()")
-            assert pixels>5,f'Canvas did not render a game frame: {pixels} colors';result['frameColors']=pixels
+        # Inspect actual Android compositor pixels, including WebGL canvases whose
+        # drawing buffer is cleared between frames. Crop the middle of the canvas
+        # to avoid counting touch controls, browser background or system bars.
         screenshot(game)
+        bounds=evaluate(ws,"(()=>{const r=document.querySelector('canvas').getBoundingClientRect();return {x:r.x,y:r.y,width:r.width,height:r.height,viewportWidth:innerWidth,viewportHeight:innerHeight}})()")
+        with Image.open(out/(game+'.png')) as frame:
+            scale=frame.width/bounds['viewportWidth']
+            inset=max(0,(frame.height-bounds['viewportHeight']*scale)/2)
+            left=max(0,int((bounds['x']+bounds['width']*.25)*scale))
+            top=max(0,int((bounds['y']+bounds['height']*.25)*scale+inset))
+            right=min(frame.width,int((bounds['x']+bounds['width']*.75)*scale))
+            bottom=min(frame.height,int((bounds['y']+bounds['height']*.75)*scale+inset))
+            assert right>left and bottom>top,bounds
+            colors=len(set(frame.crop((left,top,right,bottom)).convert('RGB').resize((64,40)).getdata()))
+        assert colors>5,f'Android did not render a game frame: {colors} colors'
+        result['frameColors']=colors
         evaluate(ws,"localStorage.setItem('__we_android_persistence_test','saved');true")
         ws.close();ws=None;adb('shell','am','force-stop',package)
         adb('shell','am','start','-n',package+'/space.worldengine.recompiled.MainActivity','--ez','smokeTest','true')
