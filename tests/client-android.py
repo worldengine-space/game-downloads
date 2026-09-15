@@ -14,8 +14,14 @@ def tap_label(label):
  raise Exception('Missing native control: '+label)
 def shot(name):
  with open('client-android-results/'+name+'.png','wb') as f:subprocess.run(['adb','exec-out','screencap','-p'],stdout=f,check=True)
-adb('install','-r','dist/WorldEngine-Android.apk');adb('shell','am','start','-n','space.worldengine.client/.MainActivity','--ez','smokeTest','true');time.sleep(12)
-adb('shell','uiautomator','dump','/sdcard/client-ui.xml');xml=adb('shell','cat','/sdcard/client-ui.xml');open('client-android-results/library.xml','w').write(xml)
+adb('logcat','-c');adb('install','-r','dist/WorldEngine-Android.apk');adb('shell','am','start','-n','space.worldengine.client/.MainActivity','--ez','smokeTest','true');time.sleep(12)
+for attempt in range(40):
+ adb('shell','uiautomator','dump','/sdcard/client-ui.xml');xml=adb('shell','cat','/sdcard/client-ui.xml')
+ if 'SimFarm - Recomplied' in xml:break
+ time.sleep(1)
+open('client-android-results/library.xml','w').write(xml)
+open('client-android-results/logcat.txt','w').write(adb('logcat','-d'))
+shot('library')
 expected=['SimFarm - Recomplied','Tom & Jerry - Recomplied','Golden Axe - Recomplied','Arkanoid - Recomplied','Lemmings - Recomplied','Prince of Persia - Recomplied','Tyrian - Recomplied','Re-Volt - Recomplied','Destruction Derby - Recomplied']
 root=ET.fromstring(xml)
 for title in expected:assert any(n.get('content-desc')==title for n in root.iter('node')),title
