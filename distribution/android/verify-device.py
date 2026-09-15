@@ -28,7 +28,7 @@ def evaluate(ws,expression):
 def wait_for(ws,expression,timeout=120):
     deadline=time.monotonic()+timeout
     while time.monotonic()<deadline:
-        value=evaluate(ws,expression)
+        value=evaluate(ws,expression if expression.startswith("(()=>") else "Boolean("+expression+")")
         if value:return value
         time.sleep(1)
     raise RuntimeError('Runtime condition timed out: '+expression)
@@ -54,13 +54,14 @@ for apk in files:
         adb('install','-r',str(apk));adb('logcat','-c')
         adb('shell','am','start','-n',package+'/space.worldengine.recompiled.MainActivity','--ez','smokeTest','true')
         ws=attach(package)
+        wait_for(ws,"document.readyState==='complete'")
         evaluate(ws,"window.__qaErrors=[];window.addEventListener('error',e=>__qaErrors.push(e.message||('resource '+e.target.src)),true);window.addEventListener('unhandledrejection',e=>__qaErrors.push(String(e.reason)));true")
         time.sleep(8)
         if game=='revolt':
             wait_for(ws,"window.reconstruction?.ready && document.body.dataset.gameScreen==='title'",180)
             for selector in ['#game-start-race','#game-mode-single','#game-physics-0']:tap(ws,selector)
             wait_for(ws,"document.body.dataset.gameScreen==='name'")
-            adb('shell','input','keyevent','66');time.sleep(1)
+            tap(ws,'#we-touch-controls button:nth-child(6)');time.sleep(1)
             for selector in ['#game-car-next','#game-track-next','#game-launch']:tap(ws,selector)
             wait_for(ws,"document.body.dataset.gameScreen==='race'")
             time.sleep(7)
@@ -85,7 +86,7 @@ for apk in files:
         else:
             wait_for(ws,"document.querySelector('canvas')")
             tap(ws,'canvas');adb('shell','input','keyevent','66');key(ws,'Space',32,' ');key(ws,'ArrowRight',39,'ArrowRight',3);time.sleep(8)
-        result['runtime']=evaluate(ws,"({url:location.href,title:document.title,canvas:[...document.querySelectorAll('canvas')].map(c=>({width:c.width,height:c.height,visible:!!c.getBoundingClientRect().width&&getComputedStyle(c).display!=='none'})),controls:document.querySelectorAll('#we-touch-controls button').length,bodyClass:document.body.className,screen:document.body.dataset.gameScreen,errors:__qaErrors})")
+        result['runtime']=evaluate(ws,"({url:location.href,title:document.title,canvas:[...document.querySelectorAll('canvas')].map(c=>({width:c.width,height:c.height,visible:!!c.getBoundingClientRect().width&&getComputedStyle(c).display!=='none'})),controls:document.querySelectorAll('#we-touch-controls button').length,bodyClass:document.body.className,screen:document.body.dataset.gameScreen,errors:window.__qaErrors||[]})")
         assert any(c['visible'] and c['width']>0 for c in result['runtime']['canvas']),result['runtime']
         assert game=='simfarm' or result['runtime']['controls']>0,result['runtime']
         assert not result['runtime']['errors'],result['runtime']['errors']
@@ -106,9 +107,11 @@ for apk in files:
         assert colors>5,f'Android did not render a game frame: {colors} colors'
         result['frameColors']=colors
         evaluate(ws,"localStorage.setItem('__we_android_persistence_test','saved');true")
+        adb('shell','input','keyevent','3');time.sleep(3)
         ws.close();ws=None;adb('shell','am','force-stop',package)
         adb('shell','am','start','-n',package+'/space.worldengine.recompiled.MainActivity','--ez','smokeTest','true')
         ws=attach(package)
+        wait_for(ws,"document.readyState==='complete'")
         assert evaluate(ws,"localStorage.getItem('__we_android_persistence_test')")=='saved'
         evaluate(ws,"localStorage.removeItem('__we_android_persistence_test');true");result['persistentStorage']=True
         logs=adb('logcat','-d','WorldEngineWeb:I','AndroidRuntime:E','*:S').decode(errors='replace')
