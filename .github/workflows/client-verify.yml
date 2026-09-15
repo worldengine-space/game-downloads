@@ -1,0 +1,48 @@
+name: Verify World Engine client
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  client:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --ignore-scripts playwright@1.62.1
+      - if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download client-v1.0.0 --pattern WorldEngine-Windows.exe --dir dist
+          $p = Start-Process -FilePath "$pwd/dist/WorldEngine-Windows.exe" -ArgumentList '--remote-debugging-port=9222' -PassThru
+          node tests/client.cjs
+          $result = $LASTEXITCODE
+          taskkill /F /IM WorldEngine.exe /T 2>$null
+          exit $result
+      - if: runner.os == 'Linux'
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download client-v1.0.0 --pattern WorldEngine-Linux.AppImage --dir dist
+          chmod +x dist/WorldEngine-Linux.AppImage
+          cd dist
+          ./WorldEngine-Linux.AppImage --appimage-extract > /dev/null
+          cd ..
+          xvfb-run --auto-servernum sh -c 'dist/squashfs-root/AppRun --no-sandbox --remote-debugging-port=9222 > client-linux.log 2>&1 & node tests/client.cjs'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: client-${{ runner.os }}
+          path: |
+            client-results/
+            client-linux.log
