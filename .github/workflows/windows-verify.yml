@@ -1,0 +1,49 @@
+name: Verify offline Windows game downloads
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to test
+        required: true
+        default: v2026.09.15
+permissions:
+  contents: read
+jobs:
+  packaged-runtime:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      max-parallel: 5
+      matrix:
+        game: [simfarm, tom-jerry, tom-jerry-claymation, golden-axe, arkanoid, lemmings, prince-of-persia, tyrian, revolt, destruction-derby]
+    steps:
+      - name: Download packaged game
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          RELEASE_TAG: ${{ inputs.tag }}
+          GAME: ${{ matrix.game }}
+        run: |
+          gh release download $env:RELEASE_TAG --repo $env:REPOSITORY --pattern "$env:GAME-windows.exe" --dir dist
+          if ($LASTEXITCODE -ne 0) { throw 'Release download failed' }
+      - name: Run offline executable and verify persistence
+        shell: pwsh
+        env:
+          GAME: ${{ matrix.game }}
+        run: |
+          $exe = Get-Item "dist/$env:GAME-windows.exe"
+          $output = Join-Path $env:GITHUB_WORKSPACE "results/$env:GAME"
+          $process = Start-Process -FilePath $exe.FullName -ArgumentList @('--self-test', "--test-output=$output") -PassThru
+          if (-not $process.WaitForExit(180000)) { $process.Kill(); throw 'Runtime test timed out' }
+          if ($process.ExitCode -ne 0) { throw "Game exited $($process.ExitCode)" }
+          $result = Get-Content "$output/result.json" -Raw | ConvertFrom-Json
+          if (-not $result.success) { throw ($result.errors -join "`n") }
+          $result | ConvertTo-Json -Depth 5
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-${{ matrix.game }}-runtime
+          path: results/
+          if-no-files-found: warn
