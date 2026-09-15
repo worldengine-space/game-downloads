@@ -44,4 +44,5 @@ for game in ['simfarm','tom-jerry','tom-jerry-claymation','golden-axe','arkanoid
  results.append(result)
  if game=='simfarm':
   evaluate('window.__qaFrame=document.querySelector("iframe");window.WorldEngineClient.account()');time.sleep(2);assert evaluate('document.getElementById("account-dialog").open&&window.__qaFrame===document.querySelector("iframe")');evaluate('document.getElementById("account-dialog").close()')
-shot('game');open('client-android-results/result.json','w').write(json.dumps(results,indent=2));ws.close()
+shot('game');tap_label('▦ Library');time.sleep(1);assert evaluate('window.WorldEngineClient.state().active') is False
+open('client-android-results/result.json','w').write(json.dumps(results,indent=2));ws.close()
