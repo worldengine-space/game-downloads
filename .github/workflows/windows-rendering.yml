@@ -1,0 +1,53 @@
+name: Inspect packaged Windows rendering
+on:
+  workflow_dispatch:
+    inputs:
+      games:
+        required: true
+        default: '["prince-of-persia", "revolt", "destruction-derby"]'
+      flags:
+        required: false
+        default: ''
+permissions:
+  contents: write
+jobs:
+  rendering:
+    runs-on: windows-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        game: ${{ fromJSON(inputs.games) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GAME: ${{ matrix.game }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          gh release download v2026.09.15 --repo $env:REPOSITORY --pattern "$env:GAME-windows.exe" --dir dist
+          if ($LASTEXITCODE -ne 0) { throw 'Download failed' }
+          npm install --no-save --ignore-scripts playwright@1.62.1 pngjs@7.0.0
+      - name: Observe actual packaged renderer
+        shell: pwsh
+        env:
+          GAME: ${{ matrix.game }}
+          EXTRA_FLAGS: ${{ inputs.flags }}
+        run: |
+          $exe = Get-Item "dist/$env:GAME-windows.exe"
+          $arguments = @('--remote-debugging-port=9222', '--remote-debugging-address=127.0.0.1')
+          if ($env:EXTRA_FLAGS) { $arguments += ($env:EXTRA_FLAGS -split ' ') }
+          $process = Start-Process -FilePath $exe.FullName -ArgumentList $arguments -PassThru
+          node tests/windows-rendering.cjs
+          $result = $LASTEXITCODE
+          taskkill /F /IM "$env:GAME.exe" /T 2>$null
+          exit $result
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-rendering-${{ matrix.game }}
+          path: rendering-results/
