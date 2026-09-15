@@ -46,9 +46,9 @@ for game in ['simfarm','tom-jerry','tom-jerry-claymation','golden-axe','arkanoid
   evaluate('window.__qaFrame=document.querySelector("iframe");window.WorldEngineClient.account()');time.sleep(2);assert evaluate('document.getElementById("account-dialog").open&&window.__qaFrame===document.querySelector("iframe")');evaluate('document.getElementById("account-dialog").close()')
 # Community stays separate from the running game and can collapse back into it.
 evaluate('window.__communityFrame=document.querySelector("iframe")')
-tap_label('Chat');time.sleep(3);shot('general-chat');tap_label('Close community ×');time.sleep(1)
+tap_label('Chat');tap_label('General chat');shot('general-chat');tap_label('Close community ×');time.sleep(1)
 assert evaluate('window.__communityFrame===document.querySelector("iframe")')
-tap_label('Feed');time.sleep(3);shot('feed');tap_label('Close community ×');time.sleep(1)
+tap_label('Feed');tap_label('Community feed');shot('feed');tap_label('Close community ×');time.sleep(1)
 assert evaluate('window.__communityFrame===document.querySelector("iframe")')
 shot('game');tap_label('▦ Library');time.sleep(1);assert evaluate('window.WorldEngineClient.state().active') is False
 open('client-android-results/result.json','w').write(json.dumps(results,indent=2));ws.close()
