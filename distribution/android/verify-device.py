@@ -1,5 +1,5 @@
 """Exercise exact signed release APKs on Android through the QA-only DevTools switch."""
-import json, pathlib, subprocess, time, urllib.request, traceback
+import json, pathlib, subprocess, time, urllib.request, traceback, os, re
 import websocket
 from PIL import Image
 out=pathlib.Path('android-evidence');out.mkdir(exist_ok=True)
@@ -28,7 +28,7 @@ def evaluate(ws,expression):
 def wait_for(ws,expression,timeout=120):
     deadline=time.monotonic()+timeout
     while time.monotonic()<deadline:
-        value=evaluate(ws,expression if expression.startswith("(()=>") else "Boolean("+expression+")")
+        value=evaluate(ws,expression if expression.startswith("(()=>") else "Boolean(document.body && ("+expression+"))")
         if value:return value
         time.sleep(1)
     raise RuntimeError('Runtime condition timed out: '+expression)
@@ -47,6 +47,9 @@ def key(ws,code,keycode,key,seconds=0.1):
 report=[]
 files=sorted(pathlib.Path('apks').glob('*-android.apk'),key=lambda p:(p.stem not in ['revolt-android','destruction-derby-android'],p.name))
 assert len(files)==10,f'Expected ten APKs, found {len(files)}'
+selected=json.loads(os.environ.get('GAME_IDS','[]'))
+if selected: files=[apk for apk in files if apk.name.removesuffix('-android.apk') in selected]
+assert not selected or len(files)==len(selected),'Missing selected APK'
 for apk in files:
     game=apk.name.removesuffix('-android.apk');package='space.worldengine.recompiled.'+game.replace('-','');ws=None
     result={'id':game,'passed':False}
@@ -116,6 +119,9 @@ for apk in files:
         evaluate(ws,"localStorage.removeItem('__we_android_persistence_test');true");result['persistentStorage']=True
         logs=adb('logcat','-d','WorldEngineWeb:I','AndroidRuntime:E','*:S').decode(errors='replace')
         errors=[line for line in logs.splitlines() if 'WorldEngineWeb: ERROR:' in line or 'FATAL EXCEPTION' in line]
+        optional=[line for line in errors if game=='tyrian' and re.search(r"warning: failed to open '(tyrian\.cfg|opentyrian\.cfg|tyrian\.sav)': No such file or directory$",line)]
+        result['firstRunOptionalFileWarnings']=optional
+        errors=[line for line in errors if line not in optional]
         assert not errors,errors
         result['passed']=True
     except Exception as error:

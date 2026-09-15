@@ -6,6 +6,10 @@ on:
         description: Release containing APKs
         default: v2026.09.15
         required: true
+      games:
+        description: Optional JSON array of games to check; empty checks all ten
+        default: '[]'
+        required: true
 permissions:
   # GitHub requires push access to read draft release assets.
   contents: write
@@ -30,6 +34,8 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
       - name: Verify offline Android games
+        env:
+          GAME_IDS: ${{ inputs.games }}
         uses: reactivecircus/android-emulator-runner@v2.35.0
         with:
           api-level: 35
