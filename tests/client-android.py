@@ -17,15 +17,15 @@ def shot(name):
 adb('logcat','-c');adb('install','-r','dist/WorldEngine-Android.apk');adb('shell','am','start','-n','space.worldengine.client/.MainActivity','--ez','smokeTest','true');time.sleep(12)
 for attempt in range(40):
  adb('shell','uiautomator','dump','/sdcard/client-ui.xml');xml=adb('shell','cat','/sdcard/client-ui.xml')
- if 'SimFarm - Recomplied' in xml:break
+ if 'SimFarm - Recompiled' in xml:break
  time.sleep(1)
 open('client-android-results/library.xml','w').write(xml)
 open('client-android-results/logcat.txt','w').write(adb('logcat','-d'))
 shot('library')
-expected=['SimFarm - Recomplied','Tom & Jerry - Recomplied','Golden Axe - Recomplied','Arkanoid - Recomplied','Lemmings - Recomplied','Prince of Persia - Recomplied','Tyrian - Recomplied','Re-Volt - Recomplied','Destruction Derby - Recomplied']
+expected=['SimFarm - Recompiled','Tom & Jerry - Recompiled','Golden Axe - Recompiled','Arkanoid - Recompiled','Lemmings - Recompiled','Prince of Persia - Recompiled','Tyrian - Recompiled','Re-Volt - Recompiled','Destruction Derby - Recompiled']
 root=ET.fromstring(xml)
 for title in expected:assert any(n.get('content-desc')==title for n in root.iter('node')),title
-shot('library');tap_label('SimFarm - Recomplied');time.sleep(15)
+shot('library');tap_label('SimFarm - Recompiled');time.sleep(15)
 pid=adb('shell','pidof','space.worldengine.client');adb('forward','tcp:9223','localabstract:webview_devtools_remote_'+pid)
 pages=json.load(urllib.request.urlopen('http://127.0.0.1:9223/json'));page=next(p for p in pages if p['url'].startswith('https://worldengine.space/play'));ws=websocket.create_connection(page['webSocketDebuggerUrl'],suppress_origin=True);seq=0
 def evaluate(expression):
@@ -44,5 +44,11 @@ for game in ['simfarm','tom-jerry','tom-jerry-claymation','golden-axe','arkanoid
  results.append(result)
  if game=='simfarm':
   evaluate('window.__qaFrame=document.querySelector("iframe");window.WorldEngineClient.account()');time.sleep(2);assert evaluate('document.getElementById("account-dialog").open&&window.__qaFrame===document.querySelector("iframe")');evaluate('document.getElementById("account-dialog").close()')
+# Community stays separate from the running game and can collapse back into it.
+evaluate('window.__communityFrame=document.querySelector("iframe")')
+tap_label('Chat');time.sleep(3);shot('general-chat');tap_label('Close community ×');time.sleep(1)
+assert evaluate('window.__communityFrame===document.querySelector("iframe")')
+tap_label('Feed');time.sleep(3);shot('feed');tap_label('Close community ×');time.sleep(1)
+assert evaluate('window.__communityFrame===document.querySelector("iframe")')
 shot('game');tap_label('▦ Library');time.sleep(1);assert evaluate('window.WorldEngineClient.state().active') is False
 open('client-android-results/result.json','w').write(json.dumps(results,indent=2));ws.close()

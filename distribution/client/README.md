@@ -7,7 +7,9 @@ The desktop client has a local, packaged library interface and a separate sandbo
 - Fixed viewport: all ten games fit at the default desktop size and at 960×600. Games occupy the remaining window height, with no page scrolling.
 - Local desktop library, recent games, keyboard selection, native fullscreen, and a persistent account session.
 - Native desktop download manager with progress, cancellation, SHA-256 verification, and Show in folder. Downloaded standalone installers are separate from the online client and keep their own local data.
-- Account and wishlist dialogs preserve the running game. Chat and game controls open on demand.
+- Account and wishlist dialogs preserve the running game. Per-game chat and game controls open on demand.
+- Chat and Feed in the native toolbar expand a separate community surface without replacing the native library or reloading the game. General chat is open to guests; feed posting uses your account.
+- Every catalog title uses the “- Recompiled” edition suffix.
 - Android native library, landscape support, game touch controls, file picker, and system download manager. Hold a game tile to download its standalone APK.
 - Internet required for the shared game library, accounts, cloud saves, and chat. Catalog metadata is cached locally; this is not an offline game installation manager or multiplayer game server.
 
