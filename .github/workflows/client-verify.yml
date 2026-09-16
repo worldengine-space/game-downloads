@@ -22,7 +22,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download client-v1.1.0 --pattern WorldEngine-Windows.exe --dir dist
+          gh release download client-v1.1.1 --pattern WorldEngine-Windows.exe --dir dist
           $p = Start-Process -FilePath "$pwd/dist/WorldEngine-Windows.exe" -ArgumentList '--remote-debugging-port=9222' -PassThru
           node tests/client.cjs
           $result = $LASTEXITCODE
@@ -33,7 +33,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download client-v1.1.0 --pattern WorldEngine-Linux.AppImage --dir dist
+          gh release download client-v1.1.1 --pattern WorldEngine-Linux.AppImage --dir dist
           chmod +x dist/WorldEngine-Linux.AppImage
           cd dist
           ./WorldEngine-Linux.AppImage --appimage-extract > /dev/null
@@ -57,7 +57,7 @@ jobs:
       - run: pip install websocket-client
       - env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release download client-v1.1.0 --pattern WorldEngine-Android.apk --dir dist
+        run: gh release download client-v1.1.1 --pattern WorldEngine-Android.apk --dir dist
       - name: Enable KVM
         run: |
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
