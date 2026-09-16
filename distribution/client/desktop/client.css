@@ -12,3 +12,9 @@ header .community-toggle{width:auto;padding:0 13px;font-size:12px;border-left:1p
 #connection,header strong span,.hero-bottom #edition,.game-index,.collection-heading{color:#b99c60}.card .recent{background:#e4be62;box-shadow:0 0 10px #e4be6266}
 #detail{background:radial-gradient(ellipse at 76% 35%,#302514 0%,#090d11 70%);border-top-color:#75603970;border-bottom-color:#75603950}.orbit svg{stroke:#c7a557}.orbit circle{fill:#e4be62}#detail-art{border-color:#d8b56666}
 .card:hover:after{border-color:#b99c60}.card.selected:after{border-color:#e4be62}#launch-effect span{background:#e4be62;box-shadow:0 0 25px #d6aa49}#download:hover,#website:hover{color:#fff1ad}button:hover{border-color:#caa75c88}.search:focus-within{border-color:#e4be62}
+:root{--silver:#ccd1d8;--silver-gradient:linear-gradient(145deg,#f5f7fa,#c7cdd5 48%,#89939f);--metal-surface:linear-gradient(160deg,#20262d,#101419 55%,#090b0e)}
+header,aside{background:var(--metal-surface);border-color:#aab4bf33}header strong,h2{background:var(--silver-gradient);background-clip:text;-webkit-background-clip:text;color:transparent}
+.card .label{color:#c8cdd4}.card.selected .label{color:#e4be62}
+#download,#open-downloads,.download-row button{background:var(--silver-gradient);color:#171b20;border-color:#c1c8d0}#download:hover,#open-downloads:hover,.download-row button:hover{background:linear-gradient(145deg,#fff,#dfe4e9 55%,#a7b0ba);color:#12171c}
+header .community-toggle{color:#ccd1d8;border-color:#aab4bf44}header .community-toggle[aria-expanded=true]{background:var(--gold-gradient);color:#171208}
+.nav:not(.selected):hover{background:#ccd1d814;color:#f5f7fa}.search{border-color:#aab4bf55;color:#ccd1d8}.search input{color:#e5e9ee}
