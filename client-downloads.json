@@ -2,29 +2,29 @@
   {
     "platform": "windows",
     "file": "WorldEngine-Windows.exe",
-    "bytes": 99353327,
-    "sha256": "b780fe02690277cbc539db7efea4ddfaf09d822fb818c4d0e0faad9eca9b2a25",
-    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Windows.exe"
+    "bytes": 99355557,
+    "sha256": "d8b4bf91629b174c8ef62b3a1312716d3fd806d276d368e6014733ad1be5d681",
+    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Windows.exe"
   },
   {
     "platform": "mac",
     "file": "WorldEngine-Mac.pkg",
-    "bytes": 228629527,
-    "sha256": "cffb3396b5b7555b2352925208e89bddba5fc47174d55dad066ae24172c90fd7",
-    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Mac.pkg"
+    "bytes": 228629637,
+    "sha256": "63f955bd1637ce770e8c2e9550806186ed6a2519c8fc5f42dc89da140df97adb",
+    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Mac.pkg"
   },
   {
     "platform": "linux",
     "file": "WorldEngine-Linux.AppImage",
-    "bytes": 124856138,
-    "sha256": "e36be90c84cfa2e38afd6d19a1eacb141c770ad94550c63cfd138cbe75b2c752",
-    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Linux.AppImage"
+    "bytes": 124856131,
+    "sha256": "a5f5b50b4d5fd240da57486d4d461f33296683fcf5f59151b7d2321dce6b668f",
+    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Linux.AppImage"
   },
   {
     "platform": "android",
     "file": "WorldEngine-Android.apk",
-    "bytes": 656578,
-    "sha256": "dd5c791906bf9701dab9c439e07b3c61bc8c868ea97e073b7edf24df4d7169f2",
-    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Android.apk"
+    "bytes": 656710,
+    "sha256": "ad300406c118583ceee7899f83b8049762aff73229f5d90bd9cff9e90df4d218",
+    "url": "https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Android.apk"
   }
 ]

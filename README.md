@@ -4,9 +4,9 @@
 
 | Windows | Mac | Linux | Android |
 | :---: | :---: | :---: | :---: |
-| [![Download windows](icons/platform-windows.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Windows.exe) | [![Download mac](icons/platform-mac.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Mac.pkg) | [![Download linux](icons/platform-linux.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Linux.AppImage) | [![Download android](icons/platform-android.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.0/WorldEngine-Android.apk) |
+| [![Download windows](icons/platform-windows.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Windows.exe) | [![Download mac](icons/platform-mac.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Mac.pkg) | [![Download linux](icons/platform-linux.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Linux.AppImage) | [![Download android](icons/platform-android.svg)](https://github.com/worldengine-space/game-downloads/releases/download/client-v1.1.1/WorldEngine-Android.apk) |
 
-All ten games in one client, with accounts, supported cloud saves, expandable general chat and community feed, and a wishlist. Internet required. [Client details](distribution/client/README.md) · [Release and checksums](https://github.com/worldengine-space/game-downloads/releases/tag/client-v1.1.0)
+All ten games in one client, with accounts, supported cloud saves, expandable general chat and community feed, and a wishlist. Internet required. [Client details](distribution/client/README.md) · [Release and checksums](https://github.com/worldengine-space/game-downloads/releases/tag/client-v1.1.1)
 
 **[Play in your browser](https://worldengine.space/play/)**
 
